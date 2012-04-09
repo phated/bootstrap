@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Bootstrap Plugin Test Suite</title>
+
+  <!-- jquery -->
+  <!--<script src="http://code.jquery.com/jquery-1.7.min.js"></script>-->
+  <!--<script src="vendor/jquery.js"></script>-->
+
+  <!-- dojo -->
+  <script src="vendor/dojo.js"></script>
+
+  <!-- qunit -->
+  <link rel="stylesheet" href="vendor/qunit.css" type="text/css" media="screen" />
+  <script src="vendor/qunit.js"></script>
+
+  <script type="text/javascript">
+    require({
+      baseUrl: "../",
+      tlmSiblingOfDojo: false,
+      packages: [
+        { name: "dojo", location: "dojo-tests/vendor/dojo" },
+        { name: "dijit", location: "dojo-tests/vendor/dijit" },
+        { name: "dojox", location: "dojo-tests/vendor/dojox" },
+        { name: "bootstrap", location: "." },
+        { name: "unit", location: "dojo-tests/unit" }
+      ]
+    }, [
+      //'unit/bootstrap-transition',
+      //'unit/bootstrap-alert',
+      //'unit/bootstrap-button',
+      //'unit/bootstrap-collapse',
+      'unit/bootstrap-dropdown',
+      //'unit/bootstrap-modal',
+      //'unit/bootstrap-scrollspy',
+      //'unit/bootstrap-tab',
+      //'unit/bootstrap-tooltip',
+      //'unit/bootstrap-popover',
+      //'unit/bootstrap-typeahead'
+    ]);
+  </script>
+
+<body>
+  <div>
+    <h1 id="qunit-header">Bootstrap Plugin Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture"></div>
+  </div>
+</body>
+</html>

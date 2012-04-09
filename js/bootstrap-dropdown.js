@@ -18,17 +18,30 @@
  * ============================================================ */
 
 
-!function( $ ){
+//!function( $ ){
+define([
+  'dojo/_base/window',
+  'dojo/_base/lang',
+  'dojo/query',
+  'dojo/on',
+  'dojo/dom-class',
+  'dojo/dom-attr',
+  'dojo/NodeList-data',
+  'dojo/NodeList-traverse'
+], function(win, lang, query, on, domClass, domAttr){
 
   "use strict"
+
+  var NodeList = query.NodeList;
 
  /* DROPDOWN CLASS DEFINITION
   * ========================= */
 
   var toggle = '[data-toggle="dropdown"]'
     , Dropdown = function ( element ) {
-        var $el = $(element).on('click.dropdown.data-api', this.toggle)
-        $('html').on('click.dropdown.data-api', function () {
+        var $el = query(element)
+        $el.on('click', this.toggle)
+        query('html').on('click', function () {
           $el.parent().removeClass('open')
         })
       }
@@ -38,55 +51,63 @@
     constructor: Dropdown
 
   , toggle: function ( e ) {
-      var $this = $(this)
-        , selector = $this.attr('data-target')
+      var $this = query(this)
+        , selector = domAttr.get($this[0], 'data-target')
         , $parent
         , isActive
 
       if (!selector) {
-        selector = $this.attr('href')
+        selector = domAttr.get($this[0], 'href')
         selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
       }
 
-      $parent = $(selector)
+      if(selector && selector !== '#'){
+        $parent = query(selector)
+      } else {
+        $parent = new query.NodeList
+      }
+
       $parent.length || ($parent = $this.parent())
 
-      isActive = $parent.hasClass('open')
+      isActive = domClass.contains($parent[0], 'open')
 
       clearMenus()
-      !isActive && $parent.toggleClass('open')
+      !isActive && domClass.toggle($parent[0], 'open')
 
+      e.stopPropagation()
+      e.preventDefault()
       return false
     }
 
   }
 
   function clearMenus() {
-    $(toggle).parent().removeClass('open')
+    query(toggle).parent().removeClass('open')
   }
 
 
   /* DROPDOWN PLUGIN DEFINITION
    * ========================== */
 
-  $.fn.dropdown = function ( option ) {
-    return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('dropdown')
-      if (!data) $this.data('dropdown', (data = new Dropdown(this)))
-      if (typeof option == 'string') data[option].call($this)
-    })
-  }
-
-  $.fn.dropdown.Constructor = Dropdown
-
+  lang.extend(NodeList, {
+    dropdown: function ( option ) {
+      var data = this.data('dropdown')
+      if (!data[0]) this.forEach(function(node){
+        dojo._nodeData(node, 'dropdown', (data = new Dropdown(node)))
+      })
+      if (typeof option == 'string') data[option].call(node)
+      return this
+    }
+  })
 
   /* APPLY TO STANDARD DROPDOWN ELEMENTS
    * =================================== */
 
-  $(function () {
-    $('html').on('click.dropdown.data-api', clearMenus)
-    $('body').on('click.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+  require([
+    'dojo/domReady!'
+  ], function(){
+    on(document, 'html:click', clearMenus)
+    on(win.body(), toggle + ':click', Dropdown.prototype.toggle)
   })
 
-}( window.jQuery );
+});
