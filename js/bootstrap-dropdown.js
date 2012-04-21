@@ -17,8 +17,6 @@
  * limitations under the License.
  * ============================================================ */
 
-
-//!function( $ ){
 define([
   'dojo/_base/window',
   'dojo/_base/lang',
